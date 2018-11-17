@@ -256,3 +256,104 @@ int LBFL::FunctionDescriptor::GetTextPosition() const
 {
 	return t_pos;
 }
+
+// PrimitiveTypeDescriptor
+
+LBFL::PrimitiveType LBFL::PrimitiveTypeDescriptor::GetType() const
+{
+	return type;
+}
+
+void LBFL::PrimitiveTypeDescriptor::SetType( LBFL::PrimitiveType type )
+{
+	PrimitiveTypeDescriptor::type = type;
+}
+
+void LBFL::PrimitiveTypeDescriptor::LoadFromBinary( char *data )
+{
+	type = (PrimitiveType) *data;
+}
+
+char *LBFL::PrimitiveTypeDescriptor::DumpToBinary() const
+{
+	return new char[1]{ (char) type };
+}
+
+std::string LBFL::PrimitiveTypeDescriptor::ToString() const
+{
+	switch (type)
+	{
+		case PrimitiveType::INT:
+			return "I";
+		case PrimitiveType::LONG:
+			return "L";
+		case PrimitiveType::SHORT:
+			return "S";
+		case PrimitiveType::BYTE:
+			return "Y";
+		case PrimitiveType::CHAR:
+			return "X";
+		case PrimitiveType::FLOAT:
+			return "F";
+		case PrimitiveType::DOUBLE:
+			return "D";
+		case PrimitiveType::BOOLEAN:
+			return "B";
+		case PrimitiveType::POINTER:
+			return "P";
+	}
+}
+
+int LBFL::PrimitiveTypeDescriptor::GetSize() const
+{
+	switch (type)
+	{
+		case PrimitiveType::INT:
+		case PrimitiveType::BOOLEAN:
+		case PrimitiveType::FLOAT:
+			return 32;
+		case PrimitiveType::LONG:
+		case PrimitiveType::DOUBLE:
+		case PrimitiveType::POINTER:
+			return 64;
+		case PrimitiveType::SHORT:
+		case PrimitiveType::CHAR:
+			return 16;
+		case PrimitiveType::BYTE:
+			return 4;
+	}
+}
+
+// ClassTypeDescriptor
+
+const std::string &LBFL::ClassTypeDescriptor::GetName() const
+{
+	return name;
+}
+
+void LBFL::ClassTypeDescriptor::SetName( const std::string &name )
+{
+	ClassTypeDescriptor::name = name;
+}
+
+// CombinedTypeDescriptor
+
+LBFL::CombinedType LBFL::CombinedTypeDescriptor::GetType() const
+{
+	return type;
+}
+
+void LBFL::CombinedTypeDescriptor::SetType( LBFL::CombinedType type )
+{
+	CombinedTypeDescriptor::type = type;
+}
+
+const LBFL::TypeDescriptor &LBFL::CombinedTypeDescriptor::GetCombinedType() const
+{
+	return combinedType;
+}
+
+void LBFL::CombinedTypeDescriptor::SetCombinedType( const LBFL::TypeDescriptor &combinedType )
+{
+	CombinedTypeDescriptor::combinedType = combinedType;
+}

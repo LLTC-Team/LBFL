@@ -18,4 +18,14 @@
 
 #include <catch2/catch.hpp>
 #include <LBFL.h>
+#include <iostream>
 
+TEST_CASE( "Test Primitive Type Binary Serialization", "[LBFL][BinarySerialization]" )
+{
+	LBFL::PrimitiveTypeDescriptor pyd1, pyd2;
+	pyd1.SetType( LBFL::PrimitiveType::SHORT );
+	char *bin = pyd1.DumpToBinary();
+	pyd2.LoadFromBinary( bin );
+	std::cout << (int) pyd1.GetType() << std::endl << (int) pyd2.GetType() <<  std::endl;
+	REQUIRE( pyd1.GetType() == pyd2.GetType());
+}

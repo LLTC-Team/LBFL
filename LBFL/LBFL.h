@@ -35,7 +35,7 @@ namespace LBFL
 	public:
 		virtual void LoadFromBinary( char *data ) {}
 
-		virtual char *DumpToBinary()
+		virtual char *DumpToBinary() const
 		{
 			return nullptr;
 		}
@@ -44,10 +44,71 @@ namespace LBFL
 	class TypeDescriptor : public BinarySerialization
 	{
 	public:
+		virtual std::string ToString() const
+		{
+			return "";
+		};
 
-		std::string ToString();
+		virtual int GetSize() const
+		{
+			return 0;
+		};
+	};
 
-		int GetSize();
+	enum class PrimitiveType : u_int8_t
+	{
+		INT = 1, LONG = 2, SHORT = 3, BYTE = 4, CHAR = 5, FLOAT = 6, DOUBLE = 7, BOOLEAN = 8, POINTER = 9
+	};
+
+	class PrimitiveTypeDescriptor : public TypeDescriptor
+	{
+	public:
+		PrimitiveType GetType() const;
+
+		void SetType( PrimitiveType type );
+
+		void LoadFromBinary( char *data ) override;
+
+		char *DumpToBinary() const override;
+
+		std::string ToString() const override;
+
+		int GetSize() const override;
+
+	private:
+		PrimitiveType type = PrimitiveType::INT;
+	};
+
+	class ClassTypeDescriptor : public TypeDescriptor
+	{
+	public:
+		const std::string &GetName() const;
+
+		void SetName( const std::string &name );
+
+	private:
+		std::string name;
+	};
+
+	enum class CombinedType : u_int8_t
+	{
+		ARRAY = 1, REFERENCE = 2
+	};
+
+	class CombinedTypeDescriptor : public TypeDescriptor
+	{
+	public:
+		CombinedType GetType() const;
+
+		void SetType( CombinedType type );
+
+		const TypeDescriptor &GetCombinedType() const;
+
+		void SetCombinedType( const TypeDescriptor &combinedType );
+
+	private:
+		CombinedType type;
+		TypeDescriptor combinedType;
 	};
 
 	class VariablesDescriptor : public BinarySerialization
@@ -113,7 +174,7 @@ namespace LBFL
 	public:
 		AccessLevel GetAccessLevel() const;
 
-		void SetAccessLevel( AccessLevel accessLevel);
+		void SetAccessLevel( AccessLevel accessLevel );
 
 		const std::string &GetNamespace() const;
 
