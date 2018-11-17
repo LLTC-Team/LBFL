@@ -20,6 +20,8 @@
 #include <cinttypes>
 #include <istream>
 #include <ostream>
+#include <vector>
+#include <utility>
 
 namespace LBFL
 {
@@ -28,64 +30,128 @@ namespace LBFL
 		PRIVATE = 1, NAMESPACE = 2, PROTECTED = 3, PUBLIC = 4;
 	};
 
-	struct TypeDescriptor
+	class BinarySerialization
 	{
+	public:
+		virtual void LoadFromBinary( char *data ) {}
+
+		virtual char *DumpToBinary()
+		{
+			return nullptr;
+		}
+	};
+
+	class TypeDescriptor : public BinarySerialization
+	{
+	public:
+
 		std::string ToString();
 
 		int GetSize();
 	};
 
-	struct FunctionDescriptor
+	class VariablesDescriptor : public BinarySerialization
 	{
-		AccessLevel GetAccessLevel();
+	public:
+		AccessLevel GetAccessLevel() const;
 
-		std::string GetName();
+		void SetAccessLevel( AccessLevel a_level );
 
-		TypeDescriptor GetReturnType();
+		const TypeDescriptor &GetType() const;
 
-		TypeDescriptor *GetParameterTypes();
+		void SetType( const TypeDescriptor &type );
 
-		bool IsNative();
+		const std::string &GetName() const;
 
-		int GetCodeSegmentPosition();
+		void SetName( const std::string &name );
 
-		std::string ToString();
+	private:
+		AccessLevel a_level;
+		TypeDescriptor type;
+		std::string name;
 	};
 
-	struct ClassDescriptor
+	class FunctionDescriptor : public BinarySerialization
 	{
-		~ClassDescriptor();
+	public:
 
-		AccessLevel GetAccessLevel();
+		const TypeDescriptor &GetReturnType() const;
 
-		std::string GetNamespace();
+		void SetReturnType( const TypeDescriptor &returnType );
 
-		std::string GetClassName();
+		AccessLevel GetAccessLevel() const;
 
-		int GetSize();
+		void SetAccessLevel( AccessLevel a_level );
 
-		TypeDescriptor *GetMemberVariables();
+		const std::string &getName() const;
 
-		FunctionDescriptor *GetFunctions();
+		void setName( const std::string &name );
+
+		const std::vector<std::pair<TypeDescriptor, std::string>> &GetParameterList() const;
+
+		void SetParameterList( const std::vector<std::pair<TypeDescriptor, std::string>> &parameters );
+
+		bool isNative() const;
+
+		void setNative( bool native );
+
+		int GetTextPosition() const;
+
+		std::string ToString();
+
+	private:
+		TypeDescriptor r_type;
+		AccessLevel a_level;
+		std::string name;
+		std::vector<std::pair<TypeDescriptor, std::string>> p_list;
+		bool native;
+		int t_pos;
+	};
+
+	class ClassDescriptor : public BinarySerialization
+	{
+	public:
+		AccessLevel GetAccessLevel() const;
+
+		void SetAccessLevel( AccessLevel accessLevel);
+
+		const std::string &GetNamespace() const;
+
+		void SetNamespace( const std::string &ns );
+
+		const std::string &GetName() const;
+
+		void GetName( const std::string &name );
+
+		int getSize() const;
+
+		const std::vector<std::pair<TypeDescriptor, std::string>> &GetMemberVariables() const;
+
+		void GetMemberVariables( const std::vector<std::pair<TypeDescriptor, std::string>> &members );
+
+		const std::vector<FunctionDescriptor> &getFunctions() const;
+
+		void setFunctions( const std::vector<FunctionDescriptor> &functions );
 
 		std::string toString();
+
 	private:
 		AccessLevel a_level;
 		std::string ns, cn;
 		int size;
-		TypeDescriptor *members;
-		FunctionDescriptor *functions;
+		std::vector<std::pair<TypeDescriptor, std::string>> members;
+		std::vector<FunctionDescriptor> functions;
 	};
 
-	struct LObjectCodeFile
+	class LObjectCodeFile : public BinarySerialization
 	{
+	public:
+
 		~LObjectCodeFile();
 
 		int GetRevision();
 
 		int GetLength();
-
-		ClassDescriptor *GetClasses();
 
 		int GetConstantPosition();
 
@@ -99,12 +165,13 @@ namespace LBFL
 
 	private:
 		char *data;
-		ClassDescriptor *classes;
 		int revision, length, c_pos, c_size, t_pos, t_size;
 	};
 
-	struct LByteCodeFile
+	class LByteCodeFile : public BinarySerialization
 	{
+	public:
+
 		~LByteCodeFile();
 
 		int GetRevision();
@@ -128,7 +195,7 @@ namespace LBFL
 
 	LObjectCodeFile *ReadAsObjectCode( std::istream &in );
 
-	void WriteObjectCode( LObjectCodeFile *code, std::ostream &out )
+	void WriteObjectCode( LObjectCodeFile *code, std::ostream &out );
 
 	LByteCodeFile *ReadAsByteCode( std::istream &in );
 

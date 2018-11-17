@@ -19,46 +19,66 @@
 
 // --- ClassDescriptor Implement Start ---
 
-LBFL::ClassDescriptor::~ClassDescriptor()
-{
-	delete[] members;
-	delete[] functions;
-}
-
-LBFL::AccessLevel LBFL::ClassDescriptor::GetAccessLevel()
-{
-	return a_level;
-}
-
-std::string LBFL::ClassDescriptor::GetNamespace()
-{
-	return ns;
-}
-
-std::string LBFL::ClassDescriptor::GetClassName()
-{
-	return cn;
-}
-
-int LBFL::ClassDescriptor::GetSize()
-{
-	return size;
-}
-
-LBFL::TypeDescriptor *LBFL::ClassDescriptor::GetMemberVariables()
-{
-	return members;
-}
-
-LBFL::FunctionDescriptor *LBFL::ClassDescriptor::GetFunctions()
-{
-	return functions;
-}
-
 std::string LBFL::ClassDescriptor::toString()
 {
 	// TODO
 	return "";
+}
+
+LBFL::AccessLevel LBFL::ClassDescriptor::GetAccessLevel() const
+{
+	return a_level;
+}
+
+void LBFL::ClassDescriptor::SetAccessLevel( LBFL::AccessLevel accessLevel )
+{
+	ClassDescriptor::a_level = accessLevel;
+}
+
+const std::string &LBFL::ClassDescriptor::GetNamespace() const
+{
+	return ns;
+}
+
+void LBFL::ClassDescriptor::SetNamespace( const std::string &ns )
+{
+	ClassDescriptor::ns = ns;
+}
+
+const std::string &LBFL::ClassDescriptor::GetName() const
+{
+	return cn;
+}
+
+void LBFL::ClassDescriptor::GetName( const std::string &name )
+{
+	ClassDescriptor::cn = name;
+}
+
+int LBFL::ClassDescriptor::getSize() const
+{
+	return size;
+}
+
+const std::vector<LBFL::FunctionDescriptor> &LBFL::ClassDescriptor::getFunctions() const
+{
+	return functions;
+}
+
+void LBFL::ClassDescriptor::setFunctions( const std::vector<LBFL::FunctionDescriptor> &functions )
+{
+	ClassDescriptor::functions = functions;
+}
+
+const std::vector<std::pair<LBFL::TypeDescriptor, std::string>> &LBFL::ClassDescriptor::GetMemberVariables() const
+{
+	return members;
+}
+
+void LBFL::ClassDescriptor::GetMemberVariables(
+		const std::vector<std::pair<LBFL::TypeDescriptor, std::string>> &members )
+{
+	ClassDescriptor::members = members;
 }
 
 // --- ClassDescriptor Implement End ---
@@ -68,7 +88,6 @@ std::string LBFL::ClassDescriptor::toString()
 LBFL::LObjectCodeFile::~LObjectCodeFile()
 {
 	delete[] data;
-	delete[] classes;
 }
 
 int LBFL::LObjectCodeFile::GetRevision()
@@ -79,11 +98,6 @@ int LBFL::LObjectCodeFile::GetRevision()
 int LBFL::LObjectCodeFile::GetLength()
 {
 	return length;
-}
-
-LBFL::ClassDescriptor *LBFL::LObjectCodeFile::GetClasses()
-{
-	return classes;
 }
 
 int LBFL::LObjectCodeFile::GetConstantPosition()
@@ -155,3 +169,90 @@ char *LBFL::LByteCodeFile::GetRawData()
 }
 
 // --- LByteCodeFile Implement End ---
+
+
+LBFL::AccessLevel LBFL::VariablesDescriptor::GetAccessLevel() const
+{
+	return a_level;
+}
+
+void LBFL::VariablesDescriptor::SetAccessLevel( LBFL::AccessLevel a_level )
+{
+	VariablesDescriptor::a_level = a_level;
+}
+
+const LBFL::TypeDescriptor &LBFL::VariablesDescriptor::GetType() const
+{
+	return type;
+}
+
+void LBFL::VariablesDescriptor::SetType( const LBFL::TypeDescriptor &type )
+{
+	VariablesDescriptor::type = type;
+}
+
+const std::string &LBFL::VariablesDescriptor::GetName() const
+{
+	return name;
+}
+
+void LBFL::VariablesDescriptor::SetName( const std::string &name )
+{
+	VariablesDescriptor::name = name;
+}
+
+const LBFL::TypeDescriptor &LBFL::FunctionDescriptor::GetReturnType() const
+{
+	return r_type;
+}
+
+void LBFL::FunctionDescriptor::SetReturnType( const LBFL::TypeDescriptor &returnType )
+{
+	FunctionDescriptor::r_type = returnType;
+}
+
+LBFL::AccessLevel LBFL::FunctionDescriptor::GetAccessLevel() const
+{
+	return a_level;
+}
+
+void LBFL::FunctionDescriptor::SetAccessLevel( LBFL::AccessLevel a_level )
+{
+	FunctionDescriptor::a_level = a_level;
+}
+
+const std::string &LBFL::FunctionDescriptor::getName() const
+{
+	return name;
+}
+
+void LBFL::FunctionDescriptor::setName( const std::string &name )
+{
+	FunctionDescriptor::name = name;
+}
+
+const std::vector<std::pair<LBFL::TypeDescriptor, std::string>> &LBFL::FunctionDescriptor::GetParameterList() const
+{
+	return p_list;
+}
+
+void LBFL::FunctionDescriptor::SetParameterList(
+		const std::vector<std::pair<LBFL::TypeDescriptor, std::string>> &parameters )
+{
+	FunctionDescriptor::p_list = parameters;
+}
+
+bool LBFL::FunctionDescriptor::isNative() const
+{
+	return native;
+}
+
+void LBFL::FunctionDescriptor::setNative( bool native )
+{
+	FunctionDescriptor::native = native;
+}
+
+int LBFL::FunctionDescriptor::GetTextPosition() const
+{
+	return t_pos;
+}
