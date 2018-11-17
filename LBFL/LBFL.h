@@ -27,7 +27,7 @@ namespace LBFL
 {
 	enum class AccessLevel : u_int8_t
 	{
-		PRIVATE = 1, NAMESPACE = 2, PROTECTED = 3, PUBLIC = 4;
+		PRIVATE = 1, NAMESPACE = 2, PROTECTED = 3, PUBLIC = 4
 	};
 
 	class BinarySerialization

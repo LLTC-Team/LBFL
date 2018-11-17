@@ -9,3 +9,4 @@ set(WITH_GFLAGS FALSE)
 add_subdirectory(ThirdParty/glog)
 
 add_subdirectory(LBFL)
+add_subdirectory(Tests)
